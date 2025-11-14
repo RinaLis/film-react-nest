@@ -3,7 +3,6 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 
 import { FilmsRepository } from '../repository/films.repository';
 import { CreateOrderDTO } from './dto/order.dto';
@@ -59,7 +58,7 @@ export class OrderService {
       });
 
       results.push({
-        id: uuid(),
+        id: `${filmId}-${scheduleId}-${ticket.row}-${ticket.seat}`,
         film: filmId,
         session: scheduleId,
         daytime: schedule.daytime,
