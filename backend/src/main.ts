@@ -7,9 +7,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/afisha');
-  app.enableCors({
-    origin: process.env.FRONT_URL || 'http://localhost:5173',
-  });
+  app.enableCors();
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -17,7 +15,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
+  
   await app.listen(3000);
 }
 bootstrap();
