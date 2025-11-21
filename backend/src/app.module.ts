@@ -20,7 +20,7 @@ import { Schedule } from './films/entity/schedule.entity';
       useFactory: (config: ConfigService) =>
         ({
           type: config.get<string>('DATABASE_DRIVER') || 'postgres',
-          host: 'localhost',
+          host: '127.0.0.1',
           port: config.get<number>('DATABASE_PORT') || 5432,
           username: config.get<string>('DATABASE_USER') || 'ypstudent',
           password: config.get<string>('DATABASE_PASSWORD') || 'YPstudent',
