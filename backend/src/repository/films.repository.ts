@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { FilmDTO } from '../films/dto/films.dto';
-import { Film } from '../films/schema/film.schema';
+import { FilmDTO, ScheduleDTO } from '../films/dto/films.dto';
+import { Film } from 'src/films/entity/film.entity';
+import { Schedule } from 'src/films/entity/schedule.entity';
 
 @Injectable()
 export class FilmsRepository {
-  constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
+  constructor(
+    @InjectRepository(Film)
+    private filmRepository: Repository<Film>,
+    @InjectRepository(Schedule)
+    private scheduleRepository: Repository<Schedule>,
+  ) {}
 
-  private toFilmDto(film: Film & { _id: any }): FilmDTO {
+  private toFilmDto(film: Film): FilmDTO {
     return {
-      id: film._id,
+      id: film.id,
       rating: film.rating,
       director: film.director,
       tags: film.tags,
@@ -20,26 +26,48 @@ export class FilmsRepository {
       title: film.title,
       about: film.about,
       description: film.description,
-      schedule: film.schedule,
+    };
+  }
+
+  private toScheduleDto(schedule: Schedule): ScheduleDTO {
+    return {
+      id: schedule.id,
+      daytime: schedule.daytime,
+      hall: schedule.hall,
+      rows: schedule.rows,
+      seats: schedule.seats,
+      price: schedule.price,
+      taken: schedule.taken,
     };
   }
 
   async findAllFilms(): Promise<FilmDTO[]> {
-    const films = await this.filmModel.find().exec();
+    const films = await this.filmRepository.find();
     return films.map((film) => this.toFilmDto(film));
   }
 
-  async findFilmById(id: string): Promise<FilmDTO> {
-    const film = await this.filmModel.findById(id).exec();
+  async findFilmById(id: string): Promise<Film> {
+    const film = await this.filmRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        schedule: true,
+      },
+    });
     if (!film) {
       return null;
     }
-    return this.toFilmDto(film);
+    return film;
+  }
+  async findSchedulesByFilmId(filmId: string): Promise<ScheduleDTO[]> {
+    const schedules = await this.scheduleRepository.find({
+      where: { filmId },
+    });
+    return schedules.map((schedule) => this.toScheduleDto(schedule));
   }
 
-  async updateFilm(filmId: string, updateData: Partial<Film>): Promise<Film> {
-    return this.filmModel
-      .findByIdAndUpdate(filmId, updateData, { new: true })
-      .exec();
+  async updateSchedule(updateData: Partial<Schedule>) {
+    this.scheduleRepository.save(updateData);
   }
 }

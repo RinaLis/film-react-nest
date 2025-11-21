@@ -9,7 +9,7 @@ export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
   @Get()
-  async findAllFilms(): Promise<ItemsListResponse<Omit<FilmDTO, 'schedule'>>> {
+  async findAllFilms(): Promise<ItemsListResponse<FilmDTO>> {
     return this.filmsService.findAllFilms();
   }
 
