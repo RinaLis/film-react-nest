@@ -3,7 +3,7 @@ import { Schedule } from './schedule.entity';
 
 @Entity('films')
 export class Film {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()

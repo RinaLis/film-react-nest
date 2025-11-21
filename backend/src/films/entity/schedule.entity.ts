@@ -10,7 +10,7 @@ import { Film } from './film.entity';
 
 @Entity('schedules')
 export class Schedule {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
