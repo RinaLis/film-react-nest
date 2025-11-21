@@ -19,12 +19,12 @@ import { Schedule } from './films/entity/schedule.entity';
       inject: [ConfigService],
       useFactory: (config: ConfigService) =>
         ({
-          type: config.get<string>('DATABASE_DRIVER') || 'postgres',
+          type: config.get<string>('DATABASE_DRIVER'),
           host: '127.0.0.1',
-          port: config.get<number>('DATABASE_PORT') || 5432,
-          username: config.get<string>('DATABASE_USER') || 'ypstudent',
-          password: config.get<string>('DATABASE_PASSWORD') || 'YPstudent',
-          database: config.get<string>('DATABASE_NAME') || 'prac',
+          port: config.get<number>('DATABASE_PORT'),
+          username: config.get<string>('DATABASE_USERNAME'),
+          password: config.get<string>('DATABASE_PASSWORD'),
+          database: config.get<string>('DATABASE_NAME'),
           entities: [Film, Schedule],
           synchronize: false,
           logging: true,
