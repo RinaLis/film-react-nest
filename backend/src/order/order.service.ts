@@ -22,13 +22,12 @@ export class OrderService {
       const filmId = ticket.film;
       const scheduleId = ticket.session;
 
-      const film = await this.filmsRepository.findFilmById(filmId);
-      if (!film)
+      const schedules =
+        await this.filmsRepository.findSchedulesByFilmId(filmId);
+      if (!schedules)
         throw new BadRequestException(`Фильм с id ${filmId} не найден`);
 
-      const schedule = film.schedule.find(
-        (schedule) => schedule.id === scheduleId,
-      );
+      const schedule = schedules.find((schedule) => schedule.id === scheduleId);
       if (!schedule) {
         throw new BadRequestException(`Киносеанс с id ${scheduleId} не найден`);
       }
@@ -40,22 +39,18 @@ export class OrderService {
           `Место с координатами ${ticket.row}:${ticket.seat} отсутствует`,
         );
       }
+      const taken = schedule.taken.split(',');
 
       const coords = `${ticket.row}:${ticket.seat}`;
-      if (schedule.taken.includes(coords)) {
+      if (taken.includes(coords)) {
         throw new ConflictException(
           `Место с координатами ${coords} уже занято`,
         );
       }
-      schedule.taken.push(coords);
+      taken.push(coords);
+      schedule.taken = taken.join(',');
 
-      await this.filmsRepository.updateFilm(film.id, {
-        schedule: film.schedule.map((schedule) =>
-          schedule.id === scheduleId
-            ? { ...schedule, taken: schedule.taken }
-            : schedule,
-        ),
-      });
+      await this.filmsRepository.updateSchedule(schedule);
 
       results.push({
         id: `${filmId}-${scheduleId}-${ticket.row}-${ticket.seat}`,

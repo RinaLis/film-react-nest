@@ -2,13 +2,12 @@ export class FilmDTO {
   id: string;
   rating: number;
   director: string;
-  tags: string[];
+  tags: string;
   image: string;
   cover: string;
   title: string;
   about: string;
   description: string;
-  schedule: ScheduleDTO[];
 }
 
 export class ScheduleDTO {
@@ -18,5 +17,5 @@ export class ScheduleDTO {
   rows: number;
   seats: number;
   price: number;
-  taken: string[]; // Массив занятых мест в формате `${row}:${seat}`
+  taken: string; // Массив занятых мест в формате `${row}:${seat}`
 }
