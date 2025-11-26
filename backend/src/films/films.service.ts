@@ -8,25 +8,21 @@ import { ItemsListResponse } from './types';
 export class FilmsService {
   constructor(private readonly filmsRepository: FilmsRepository) {}
 
-  async findAllFilms(): Promise<ItemsListResponse<Omit<FilmDTO, 'schedule'>>> {
+  async findAllFilms(): Promise<ItemsListResponse<FilmDTO>> {
     const films = await this.filmsRepository.findAllFilms();
     return {
       total: films.length,
-      items: films.map((film) => {
-        delete film.schedule;
-        return film;
-      }),
+      items: films,
     };
   }
 
   async getFilmScheduleById(
     id: string,
   ): Promise<ItemsListResponse<ScheduleDTO>> {
-    const film = await this.filmsRepository.findFilmById(id);
-    if (!film) {
+    const schedules = await this.filmsRepository.findSchedulesByFilmId(id);
+    if (!schedules) {
       throw new NotFoundException(`Фильм с id ${id} не найден`);
     }
-    const schedules = (film.schedule ?? []) as ScheduleDTO[];
     return {
       total: schedules.length,
       items: schedules,
