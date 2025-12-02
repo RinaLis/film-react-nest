@@ -5,13 +5,14 @@ import {
 } from '@nestjs/common';
 
 import { FilmsRepository } from '../repository/films.repository';
-import { CreateOrderDTO } from './dto/order.dto';
+import { CreateOrderDTO, OrderDTO } from './dto/order.dto';
+import { ItemsListResponse } from 'src/films/types';
 
 @Injectable()
 export class OrderService {
   constructor(private readonly filmsRepository: FilmsRepository) {}
 
-  async create({ tickets }: CreateOrderDTO) {
+  async create({ tickets }: CreateOrderDTO): Promise<ItemsListResponse<OrderDTO>> {
     if (!tickets?.length) {
       throw new BadRequestException('Не добавлено ни одного билета');
     }
