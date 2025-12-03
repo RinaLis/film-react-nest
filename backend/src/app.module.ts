@@ -20,14 +20,14 @@ import { Schedule } from './films/entity/schedule.entity';
       useFactory: (config: ConfigService) =>
         ({
           type: config.get<string>('DATABASE_DRIVER'),
-          host: '127.0.0.1',
+          host: config.get<number>('DATABASE_HOST'),
           port: config.get<number>('DATABASE_PORT'),
           username: config.get<string>('DATABASE_USERNAME'),
           password: config.get<string>('DATABASE_PASSWORD'),
           database: config.get<string>('DATABASE_NAME'),
           entities: [Film, Schedule],
           synchronize: false,
-          logging: true,
+          logging: config.get<string>('DATABASE_LOGGING'),
         }) as TypeOrmModuleOptions,
     }),
 

@@ -38,3 +38,13 @@ export class CreateOrderDTO extends ContactsDTO {
   @Type(() => TicketDTO)
   tickets: TicketDTO[];
 }
+
+export class OrderDTO {
+  id: string;
+  film: string;
+  session: string;
+  daytime: string;
+  row: number;
+  seat: number;
+  price: number;
+}
